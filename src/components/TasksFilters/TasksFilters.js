@@ -37,3 +37,9 @@ export default class TasksFilters extends Component {
   }
   
 }
+
+
+TasksFilters.defaultProps = {
+  getFiltered: () => {},
+  selectedFilter : ''
+}

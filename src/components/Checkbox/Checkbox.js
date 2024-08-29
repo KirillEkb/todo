@@ -1,8 +1,14 @@
 import React, {Component} from "react";
+import PropTypes from 'prop-types';
 import './Checkbox.css';
 
-class Checkbox extends Component {
-
+export default class Checkbox extends Component {
+    static defaultProps = {
+        checked:false
+    }
+    static propTypes = {
+        checked: PropTypes.bool,
+    }
     render(){
         const {checked} = this.props
         return (
@@ -14,5 +20,3 @@ class Checkbox extends Component {
         type="checkbox"/>
     )}
 };
-
-export default Checkbox;
