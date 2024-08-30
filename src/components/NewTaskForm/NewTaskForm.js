@@ -1,24 +1,24 @@
 //форма для добавления
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import './NewTaskForm.css';
 
 export default class NewTaskForm extends Component {
-    state = {
-        description: ''
-    }
+  state = {
+    description: '',
+  };
 
-    onChange = (evt) => {
-        this.setState({description : evt.target.value})
-    }
-    onEnter = (evt) => {
+  onChange = (evt) => {
+    this.setState({ description: evt.target.value });
+  };
+  onEnter = (evt) => {
     if (evt.code === 'Enter' && evt.target.value.trim()) {
-        this.props.addTask(this.state.description);
-        this.setState({description:''});
-    };
+      this.props.addTask(this.state.description);
+      this.setState({ description: '' });
     }
-    render() {
-        return(
-        <input
+  };
+  render() {
+    return (
+      <input
         type="text"
         className="new-todo"
         placeholder="What needs to be done?"
@@ -26,7 +26,7 @@ export default class NewTaskForm extends Component {
         autoFocus
         onChange={this.onChange}
         onKeyUp={this.onEnter}
-        />
-        );
-    }
-} 
+      />
+    );
+  }
+}
