@@ -11,8 +11,6 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-jsx-a11y": "^6.9.0",
-    "husky": "^9.1.5",
-    "lint-staged": "^15.2.9",
     "prettier": "^3.3.3",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
@@ -30,7 +28,8 @@
     "deploy": "gh-pages -d build",
     "lint": "eslint ./src",
     "lint:fix": "eslint ./src --fix",
-    "prettier": "prettier"
+    "prettier": "prettier",
+    "prepare": "husky"
   },
   "browserslist": {
     "production": [
@@ -59,10 +58,14 @@
     "eslint-plugin-babel": "^5.3.1",
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-react": "^7.35.0",
-    "gh-pages": "^6.1.1"
+    "gh-pages": "^6.1.1",
+    "husky": "^9.1.5",
+    "lint-staged": "^15.2.9"
   },
   "lint-staged": {
     "*.(js|jsx)": [
+      "eslint",
+      "prettier --write",
       "npm run lint:write",
       "git add"
     ]
