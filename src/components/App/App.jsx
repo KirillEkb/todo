@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 
+import data from '../../data/data';
 import Header from '../Header/Header';
 import TaskList from '../TaskList/TaskList';
 import Footer from '../Footer/Footer';
@@ -17,7 +18,7 @@ export default class App extends Component {
   };
 
   state = {
-    toDoData: [this.createTask('Completed task'), this.createTask('Editing task'), this.createTask('Active task')],
+    toDoData: data.map((el) => this.createTask(el)),
     selectedFilter: 'All',
   };
 
@@ -78,7 +79,15 @@ export default class App extends Component {
     const { toDoData, selectedFilter } = this.state;
     const done = toDoData.filter((el) => el.completed);
     const active = toDoData.filter((el) => !el.completed);
-    let todos = selectedFilter === 'All' ? toDoData : selectedFilter === 'Completed' ? done : active;
+
+    let todos;
+    if (selectedFilter === 'All') {
+      todos = toDoData;
+    } else if (selectedFilter === 'Active') {
+      todos = active;
+    } else if (selectedFilter === 'Completed') {
+      todos = done;
+    }
     return (
       <>
         <Header addTask={this.addTask} />

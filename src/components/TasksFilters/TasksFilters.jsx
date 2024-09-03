@@ -1,27 +1,21 @@
 //фильтры в футере
-import React, { Component } from 'react';
+import { Component } from 'react';
 
+import importedButtons from '../../data/button';
 import './TasksFilters.css';
 import Button from '../Button/Button';
 
 export default class TasksFilters extends Component {
-  state = {
-    button: [
-      { id: 'All', className: '', text: 'All' },
-      { id: 'Active', className: '', text: 'Active' },
-      { id: 'Completed', className: '', text: 'Completed' },
-    ],
-  };
+  buttonsDescription = importedButtons;
 
   render() {
     const { getFiltered, selectedFilter } = this.props;
-    const buttons = this.state.button.map((but) => {
+    const buttons = this.buttonsDescription.map((but) => {
       const key = but.id;
       return (
         <li key={key}>
           <Button
             selectedFilter={selectedFilter}
-            key={but.id}
             func={() => {
               getFiltered(key);
             }}

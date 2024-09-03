@@ -11,6 +11,7 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-jsx-a11y": "^6.9.0",
+    "eslint-plugin-react-hooks": "^4.6.2",
     "prettier": "^3.3.3",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
@@ -26,8 +27,8 @@
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "lint": "eslint ./src",
-    "lint:fix": "eslint ./src --fix",
+    "lint": "eslint ./src/**/*.{js,jsx}",
+    "lint:fix": "eslint ./src/**/*.{js,jsx} --fix",
     "prettier": "prettier",
     "prepare": "husky"
   },
@@ -72,7 +73,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "eslint ./src",
+      "pre-commit": "eslint ./src/**/*.{js,jsx}",
       "pre-push": "prettier"
     }
   }

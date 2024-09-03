@@ -1,5 +1,5 @@
 //одна задача
-import React, { Component } from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import './Task.css';
 import { formatDistanceToNow } from 'date-fns';
@@ -40,16 +40,20 @@ export default class Task extends Component {
     }
   };
 
+  onEdit = () => {
+    this.setState(() => {
+      return { classNames: 'editing' };
+    });
+    this.setState({ label: this.props.description });
+  };
+
   render() {
     const { description, create, onDeleted, onDone, completed } = this.props;
     const created = formatDistanceToNow(create, { addSuffix: true, includeSeconds: true });
 
     let checked;
     let classNames = this.state.classNames;
-    const onEdit = () => {
-      this.setState({ classNames: 'editing' });
-      this.setState({ label: description });
-    };
+
     if (completed) {
       checked = true;
       classNames += ' completed';
@@ -63,7 +67,7 @@ export default class Task extends Component {
             <span className="description">{description}</span>
             <span className="created">created {created}</span>
           </label>
-          <Button func={onEdit} id="icon-edit" className="icon icon-edit" text="" />
+          <Button func={this.onEdit} id="icon-edit" className="icon icon-edit" text="" />
           <Button func={onDeleted} id="icon-destroy" className="icon icon-destroy" text="" />
         </div>
         <input
