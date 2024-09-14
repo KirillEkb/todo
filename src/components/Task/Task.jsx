@@ -77,7 +77,7 @@ export default class Task extends Component {
     this.TimerId = setInterval(() => {
       if (this.state.Min <= 0 && this.state.Sec <= 0) {
         clearInterval(this.TimerId);
-      } else if (this.state.Sec === 0) {
+      } else if (this.state.Sec <= 0) {
         this.setState({ Min: this.state.Min - 1, Sec: 59 });
       } else {
         this.setState({ Sec: this.state.Sec - 1 });
