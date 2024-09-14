@@ -1,11 +1,15 @@
-//фильтры в футере
 import { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import importedButtons from '../../data/button';
 import './TasksFilters.css';
 import Button from '../Button/Button';
 
 export default class TasksFilters extends Component {
+  static propTypes = {
+    getFiltered: PropTypes.func,
+    selectedFilter: PropTypes.string,
+  };
   buttonsDescription = importedButtons;
 
   render() {

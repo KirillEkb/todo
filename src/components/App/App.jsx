@@ -8,10 +8,12 @@ import Footer from '../Footer/Footer';
 export default class App extends Component {
   maxId = 1;
 
-  createTask = (description) => {
+  createTask = (Task, Min = 1, Sec = 0) => {
     return {
       id: this.maxId++,
-      description,
+      Task,
+      Min,
+      Sec,
       completed: false,
       create: new Date(),
     };
@@ -31,8 +33,8 @@ export default class App extends Component {
     });
   };
 
-  addTask = (description) => {
-    const newItem = this.createTask(description);
+  addTask = (Task, Min = 1, Sec = 1) => {
+    const newItem = this.createTask(Task, Min, Sec);
     this.setState(({ toDoData }) => {
       const newArr = [...toDoData, newItem];
       return {
@@ -52,11 +54,11 @@ export default class App extends Component {
       };
     });
   };
-  changeTask = (changedDescription, id) => {
+  changeTask = (changedDescription, newMin, newSec, id) => {
     this.setState(({ toDoData }) => {
       const idx = toDoData.findIndex((el) => el.id === id);
       const toChange = toDoData[idx];
-      const changed = { ...toChange, description: changedDescription };
+      const changed = { ...toChange, Task: changedDescription, Min: newMin, Sec: newSec };
       const newArr = toDoData.toSpliced(idx, 1, changed);
       return {
         toDoData: newArr,
@@ -78,20 +80,17 @@ export default class App extends Component {
   render() {
     const { toDoData, selectedFilter } = this.state;
     const done = toDoData.filter((el) => el.completed);
-    const active = toDoData.filter((el) => !el.completed);
 
-    let todos;
-    if (selectedFilter === 'All') {
-      todos = toDoData;
-    } else if (selectedFilter === 'Active') {
-      todos = active;
-    } else if (selectedFilter === 'Completed') {
-      todos = done;
-    }
     return (
       <>
         <Header addTask={this.addTask} />
-        <TaskList todos={todos} onDeleted={this.deleteTask} onDone={this.onDone} changeTask={this.changeTask} />
+        <TaskList
+          todos={toDoData}
+          selectedFilter={selectedFilter}
+          onDeleted={this.deleteTask}
+          onDone={this.onDone}
+          changeTask={this.changeTask}
+        />
         <Footer
           active={toDoData.length - done.length}
           getFiltered={this.getFiltered}

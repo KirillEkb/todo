@@ -1,4 +1,3 @@
-//футер с информацией и кнопками
 import PropTypes from 'prop-types';
 
 import TasksFilters from '../TasksFilters/TasksFilters';

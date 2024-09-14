@@ -1,33 +1,41 @@
-//форма для добавления
 import { Component } from 'react';
+
 import './NewTaskForm.css';
+import inputsArr from '../../data/newTaskInputs';
 
 export default class NewTaskForm extends Component {
   state = {
-    description: '',
+    Task: '',
+    Min: '',
+    Sec: '',
   };
 
   onChange = (evt) => {
-    this.setState({ description: evt.target.value });
+    this.setState({
+      [evt.target.id]: evt.target.value,
+    });
   };
   onSubmit = (evt) => {
     evt.preventDefault();
-    this.props.addTask(this.state.description);
-    this.setState({ description: '' });
+    if (!this.state.Task.trim()) return;
+    this.props.addTask(this.state.Task, this.state.Min || 0, this.state.Sec || 0);
+    this.setState({
+      Task: '',
+      Min: '',
+      Sec: '',
+    });
   };
+
   render() {
+    const inputs = inputsArr.map((input) => {
+      const key = input.id;
+      return <input key={key} type="text" onChange={this.onChange} value={this.state[key]} {...input} />;
+    });
+
     return (
-      <form onSubmit={this.onSubmit}>
-        <input
-          required
-          type="text"
-          pattern="\S.*"
-          className="new-todo"
-          placeholder="What needs to be done?"
-          value={this.state.description}
-          autoFocus
-          onChange={this.onChange}
-        />
+      <form className="new-todo-form" onSubmit={this.onSubmit}>
+        {inputs}
+        <button type="submit"></button>
       </form>
     );
   }

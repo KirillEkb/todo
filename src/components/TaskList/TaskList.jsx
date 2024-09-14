@@ -1,4 +1,3 @@
-//список задач
 import { Component } from 'react';
 import PropTypes from 'prop-types';
 
@@ -10,13 +9,15 @@ export default class TaskList extends Component {
     todos: PropTypes.array,
     onDeleted: PropTypes.func,
     onDone: PropTypes.func,
+    changeTask: PropTypes.func,
+    selectedFilter: PropTypes.string,
   };
-
   render() {
-    const { todos, onDeleted, onDone, changeTask } = this.props;
+    const { todos, onDeleted, onDone, changeTask, selectedFilter } = this.props;
     const elements = todos.map((item) => {
       return (
         <Task
+          selectedFilter={selectedFilter}
           changeTask={changeTask}
           key={item.id}
           onDeleted={() => onDeleted(item.id)}
