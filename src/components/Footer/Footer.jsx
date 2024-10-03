@@ -4,7 +4,7 @@ import TasksFilters from '../TasksFilters/TasksFilters';
 import './Footer.css';
 import Button from '../Button/Button';
 
-const Footer = ({ active, getFiltered, selectedFilter, clearCompleted }) => {
+const Footer = ({ active = 0, getFiltered, selectedFilter = 'All', clearCompleted }) => {
   return (
     <footer className="footer">
       <span className="todo-count">{active} items left</span>
@@ -12,11 +12,6 @@ const Footer = ({ active, getFiltered, selectedFilter, clearCompleted }) => {
       <Button func={clearCompleted} id="clear-completed" className="clear-completed" text="Clear completed" />
     </footer>
   );
-};
-
-Footer.defaultProps = {
-  active: 0,
-  selectedFilter: 'All',
 };
 
 Footer.propTypes = {

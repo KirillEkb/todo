@@ -1,7 +1,7 @@
 import './Button.css';
 import PropTypes from 'prop-types';
 
-const Button = ({ func, id, selectedFilter, className, text }) => {
+const Button = ({ func, id, selectedFilter = '', className = '', text = '' }) => {
   if (id === selectedFilter) {
     className += 'selected';
   }
@@ -12,12 +12,6 @@ const Button = ({ func, id, selectedFilter, className, text }) => {
   );
 };
 
-Button.defaultProps = {
-  func: () => {},
-  selectedFilter: '',
-  className: '',
-  text: '',
-};
 Button.propTypes = {
   id: PropTypes.string.isRequired,
   func: PropTypes.func,

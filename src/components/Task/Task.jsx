@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import './Task.css';
 import { formatDistanceToNow } from 'date-fns';
@@ -6,130 +6,116 @@ import { formatDistanceToNow } from 'date-fns';
 import Button from '../Button/Button';
 import Checkbox from '../Checkbox/Checkbox';
 
-export default class Task extends Component {
-  static defaultProps = {
-    completed: false,
-    editing: false,
+const Task = (props) => {
+  const { completed = false, selectedFilter, Task, create, onDeleted, onDone, id, changeTask, Min, Sec } = props;
+  const [classNames, setClassNames] = useState('');
+  const [label, setLabel] = useState('');
+  const [Secs, setSecs] = useState(parseInt(Sec) + Min * 60);
+  const [TimerId, setTimerId] = useState();
+  useEffect(() => {
+    return () => clearInterval(TimerId);
+  }, [Min, Sec, TimerId]);
+
+  useEffect(() => {
+    if (completed) {
+      setClassNames((prevClassNames) => prevClassNames + ' completed');
+    } else {
+      setClassNames((prevClassNames) => prevClassNames.replace('completed', ''));
+    }
+  }, [completed]);
+
+  useEffect(() => {
+    if (selectedFilter === 'Active' && completed) {
+      setClassNames((prevClassNames) => prevClassNames + ' hidden');
+    } else if (selectedFilter === 'Completed' && !completed) {
+      setClassNames((prevClassNames) => prevClassNames + ' hidden');
+    } else {
+      setClassNames((prevClassNames) => prevClassNames.replace('hidden', ''));
+    }
+  }, [selectedFilter, completed]);
+
+  const onChange = (evt) => {
+    setLabel(evt.target.value);
   };
 
-  static propTypes = {
-    Task: PropTypes.string.isRequired,
-    create: PropTypes.object.isRequired,
-    onDeleted: PropTypes.func,
-    onDone: PropTypes.func,
-    completed: PropTypes.bool,
-  };
-  state = {
-    classNames: '',
-    label: '',
-    Min: '',
-    Sec: '',
-  };
-  TimerId;
-  componentDidMount() {
-    this.setState({ Min: this.props.Min, Sec: this.props.Sec });
-  }
-  componentWillUnmount() {
-    clearInterval(this.TimerId);
-  }
-
-  onChange = (evt) => {
-    this.setState({ label: evt.target.value });
-  };
-
-  onEnter = (evt) => {
+  const onEnter = (evt) => {
     if (evt.code === 'Enter' && evt.target.value.trim()) {
-      this.setState({ label: '', Min: this.state.Min, Sec: this.state.Sec });
-      this.setState(({ classNames }) => {
-        return { classNames: classNames.replace('editing', '') };
-      });
-      const id = this.props.id;
-      this.props.changeTask(this.state.label, this.state.Min, this.state.Sec, id);
+      setLabel('');
+      setClassNames((prevClassNames) => prevClassNames.replace('editing', ''));
+      changeTask(label, Secs / 60, Secs % 60, id);
+      onStartTimer();
     }
     if (evt.code === 'Escape') {
-      this.setState(() => {
-        return { classNames: '', label: this.state.label, Min: this.state.Min, Sec: this.state.Sec };
-      });
+      setClassNames((prevClassNames) => prevClassNames.replace('editing', ''));
     }
   };
 
-  onEdit = () => {
-    this.setState(() => {
-      return { classNames: 'editing', label: this.props.Task, Min: this.state.Min, Sec: this.state.Sec };
-    });
+  const onEdit = () => {
+    setClassNames((prevClassNames) => prevClassNames + ' editing');
+    setLabel(Task);
     document.addEventListener('click', (evt) => {
       if (evt.target !== document.activeElement) {
-        this.setState(() => {
-          return { classNames: '', label: this.props.Task, Min: this.state.Min, Sec: this.state.Sec };
-        });
+        setClassNames('');
+        setLabel(Task);
       }
     });
   };
 
-  onChangeTimer = (Min, Sec) => {
-    return `${Min}:${Sec}`;
+  const onChangeTimer = (Secs) => {
+    return `${Math.floor(Secs / 60)}:${Secs % 60}`;
   };
 
-  onStartTimer = () => {
-    if (this.TimerId) {
-      clearInterval(this.TimerId);
+  const onStartTimer = () => {
+    if (TimerId) {
+      clearInterval(TimerId);
     }
-    this.TimerId = setInterval(() => {
-      if (this.state.Min <= 0 && this.state.Sec <= 0) {
-        clearInterval(this.TimerId);
-      } else if (this.state.Sec <= 0) {
-        this.setState({ Min: this.state.Min - 1, Sec: 59 });
-      } else {
-        this.setState({ Sec: this.state.Sec - 1 });
-      }
+    const newTimerId = setInterval(() => {
+      setSecs((prevSecs) => {
+        if (prevSecs <= 0) {
+          clearInterval(newTimerId);
+          return 0;
+        }
+        return prevSecs - 1;
+      });
     }, 1000);
+    setTimerId(newTimerId);
   };
 
-  onStopTimer = () => {
-    clearInterval(this.TimerId);
+  const onStopTimer = () => {
+    clearInterval(TimerId);
   };
 
-  render() {
-    const { Task, create, onDeleted, onDone, completed } = this.props;
-    const created = formatDistanceToNow(create, { addSuffix: true, includeSeconds: true });
-    const timer = this.onChangeTimer(this.state.Min, this.state.Sec);
-    let checked;
-    let classNames = this.state.classNames;
+  const created = formatDistanceToNow(create, { addSuffix: true, includeSeconds: true });
+  const timer = onChangeTimer(Secs);
+  let checked = completed;
 
-    if (completed) {
-      checked = true;
-      classNames += ' completed';
-    }
-    if (this.props.selectedFilter === 'Active' && completed) {
-      classNames += ' hidden';
-    } else if (this.props.selectedFilter === 'Completed' && !completed) {
-      classNames += ' hidden';
-    }
+  return (
+    <li className={classNames}>
+      <div className="view">
+        <Checkbox checked={checked} onChange={onDone} id="toggle" className="toggle" />
+        <label>
+          <span className="title">{Task}</span>
+          <span className="description">
+            <Button func={onStartTimer} id="icon-play" className="icon icon-play" text="" />
+            <Button func={onStopTimer} id="icon-pause" className="icon icon-pause" text="" />
+            {timer}
+          </span>
+          <span className="description">created {created}</span>
+        </label>
+        <Button func={onEdit} id="icon-edit" className="icon icon-edit" text="" />
+        <Button func={onDeleted} id="icon-destroy" className="icon icon-destroy" text="" />
+      </div>
+      <input value={label} onChange={onChange} onKeyUp={onEnter} type="text" className="edit"></input>
+    </li>
+  );
+};
 
-    return (
-      <li className={classNames}>
-        <div className="view">
-          <Checkbox checked={checked} onChange={onDone} id="toggle" className="toggle" />
-          <label>
-            <span className="title">{Task}</span>
-            <span className="description">
-              <Button func={this.onStartTimer} id="icon-play" className="icon icon-play" text="" />
-              <Button func={this.onStopTimer} id="icon-pause" className="icon icon-pause" text="" />
-              {timer}
-            </span>
-            <span className="description">created {created}</span>
-          </label>
-          <Button func={this.onEdit} id="icon-edit" className="icon icon-edit" text="" />
-          <Button func={onDeleted} id="icon-destroy" className="icon icon-destroy" text="" />
-        </div>
-        <input
-          value={this.state.label}
-          onChange={this.onChange}
-          onKeyUp={this.onEnter}
-          type="text"
-          className="edit"
-        ></input>
-      </li>
-    );
-  }
-}
+Task.propTypes = {
+  Task: PropTypes.string.isRequired,
+  create: PropTypes.object.isRequired,
+  onDeleted: PropTypes.func,
+  onDone: PropTypes.func,
+  completed: PropTypes.bool,
+};
+
+export default Task;

@@ -1,42 +1,51 @@
-import { Component } from 'react';
+import { useState } from 'react';
 
 import './NewTaskForm.css';
 import inputsArr from '../../data/newTaskInputs';
 
-export default class NewTaskForm extends Component {
-  state = {
-    Task: '',
-    Min: '',
-    Sec: '',
-  };
+const NewTaskForm = ({ addTask }) => {
+  const [Task, setTask] = useState('');
+  const [Min, setMin] = useState('');
+  const [Sec, setSec] = useState('');
 
-  onChange = (evt) => {
-    this.setState({
-      [evt.target.id]: evt.target.value,
-    });
+  const onChange = (evt) => {
+    const { id, value } = evt.target;
+    if (id === 'Task') {
+      setTask(value);
+    } else if (id === 'Min') {
+      setMin(value);
+    } else if (id === 'Sec') {
+      setSec(value);
+    }
   };
-  onSubmit = (evt) => {
+  const onSubmit = (evt) => {
     evt.preventDefault();
-    if (!this.state.Task.trim()) return;
-    this.props.addTask(this.state.Task, this.state.Min || 0, this.state.Sec || 0);
-    this.setState({
-      Task: '',
-      Min: '',
-      Sec: '',
-    });
+    if (!Task.trim()) return;
+    addTask(Task, Min || 0, Sec || 0);
+    setTask('');
+    setMin('');
+    setSec('');
   };
 
-  render() {
-    const inputs = inputsArr.map((input) => {
-      const key = input.id;
-      return <input key={key} type="text" onChange={this.onChange} value={this.state[key]} {...input} />;
-    });
-
+  const inputs = inputsArr.map((input) => {
+    const key = input.id;
     return (
-      <form className="new-todo-form" onSubmit={this.onSubmit}>
-        {inputs}
-        <button type="submit"></button>
-      </form>
+      <input
+        key={key}
+        type="text"
+        onChange={onChange}
+        value={key === 'Task' ? Task : key === 'Min' ? Min : Sec}
+        {...input}
+      />
     );
-  }
-}
+  });
+
+  return (
+    <form className="new-todo-form" onSubmit={onSubmit}>
+      {inputs}
+      <button type="submit"></button>
+    </form>
+  );
+};
+
+export default NewTaskForm;
