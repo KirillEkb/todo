@@ -20,19 +20,19 @@ const App = () => {
   const [toDoData, setToDoData] = useState(data.map((el) => createTask(el)));
 
   const deleteTask = (id) => {
-    setToDoData(toDoData.filter((el) => el.id !== id));
+    setToDoData((toDoData) => toDoData.filter((el) => el.id !== id));
   };
 
   const addTask = (Task, Min = 1, Sec = 1) => {
     const newItem = createTask(Task, Min, Sec);
-    setToDoData([...toDoData, newItem]);
+    setToDoData((toDoData) => [...toDoData, newItem]);
   };
 
   const onDone = (id) => {
-    setToDoData(toDoData.map((el) => (el.id === id ? { ...el, completed: !el.completed } : el)));
+    setToDoData((toDoData) => toDoData.map((el) => (el.id === id ? { ...el, completed: !el.completed } : el)));
   };
   const changeTask = (changedDescription, newMin, newSec, id) => {
-    setToDoData(
+    setToDoData((toDoData) =>
       toDoData.map((el) => (el.id === id ? { ...el, Task: changedDescription, Min: newMin, Sec: newSec } : el))
     );
   };
@@ -40,7 +40,7 @@ const App = () => {
     setSelectedFilter(key);
   };
   const clearCompleted = () => {
-    setToDoData(toDoData.filter((el) => !el.completed));
+    setToDoData((toDoData) => toDoData.filter((el) => !el.completed));
   };
   const done = toDoData.filter((el) => el.completed);
 
